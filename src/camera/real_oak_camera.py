@@ -88,4 +88,6 @@ if __name__ == "__main__":
     center_x, center_y = 320, 200
     depth_mm = camera.get_depth_at_point(center_x, center_y, frame['depth'])
     depth_feet = camera.mm_to_feet(depth_mm)
-    print(f"\nDepth at center ({center_x}, {center_y}
+    print(f"\nDepth at center ({center_x}, {center_y}): {depth_mm}mm ({depth_feet: .2f} feet)")
+
+camera.stop()
