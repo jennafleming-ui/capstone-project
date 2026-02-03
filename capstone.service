@@ -1,0 +1,11 @@
+[Unit]
+Description=Assistive Navigation Hat
+After=network.online.target
+
+[Service]
+ExecStart=/bin/bash /home/pi/capstone-project/start.sh
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
