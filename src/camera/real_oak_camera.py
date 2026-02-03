@@ -15,31 +15,30 @@ class RealOAKCamera:
         self.pipeline = dai.Pipeline()
 
         # RGB camera
-        cam_rgb = self.pipeline.create(dai.node.ColorCamera)
-        cam_rgb.setResolution(dai.ColorCameraResolution.THE_1080P)
+        cam_rgb = self.pipeline.createColorCamera()
         cam_rgb.setPreviewSize(self.width, self.height)
         cam_rgb.setInterleaved(False)
 
         # Depth cameras (left and right)
-        cam_left = self.pipeline.create(dai.node.MonoCamera)
+        cam_left = self.pipeline.createMonoCamera()
         cam_left.setResolution(dai.MonoCameraResolution.THE_400P)
         cam_left.camId = 'CAM_B'
 
-        cam_right = self.pipeline.create(dai.node.MonoCamera)
+        cam_right = self.pipeline.createMonoCamera()
         cam_right.setResolution(dai.MonoCameraResolution.THE_400P)
         cam_right.camId = 'CAM_C'
 
         # Stereo depth
-        stereo = self.pipeline.create(dai.node.StereoDepth)
+        stereo = self.pipeline.createStereoDepth()
         cam_left.out.link(stereo.left)
         cam_right.out.link(stereo.right)
 
         # Outputs
-        xout_rgb = self.pipeline.create(dai.node.XLinkOut)
+        xout_rgb = self.pipeline.createXLinkOut()
         xout_rgb.setName("rgb")
         cam_rgb.preview.link(xout_rgb.input)
 
-        xout_depth = self.pipeline.create(dai.node.XLinkOut)
+        xout_depth = self.pipeline.createXLinkOut()
         xout_depth.setName("depth")
         stereo.depth.link(xout_depth.input)
 
@@ -89,6 +88,4 @@ if __name__ == "__main__":
     center_x, center_y = 320, 200
     depth_mm = camera.get_depth_at_point(center_x, center_y, frame['depth'])
     depth_feet = camera.mm_to_feet(depth_mm)
-    print(f"\nDepth at center ({center_x}, {center_y}): {depth_mm}mm ({depth_feet:.2f} feet)")
-
-    camera.stop()
+    print(f"\nDepth at center ({center_x}, {center_y}
