@@ -67,9 +67,10 @@ class ObstacleDetector:
 if __name__ == "__main__":
     import sys
     sys.path.append('..')
-    from camera.mock_oak_camera import MockOAKCamera
+    from camera.real_oak_camera import RealOAKCamera
     
-    camera = MockOAKCamera()
+    camera = RealOAKCamera()
+    camera.start()
     detector = ObstacleDetector(min_distance_feet=2, max_distance_feet=4)
     
     print("Testing obstacle detection...\n")
