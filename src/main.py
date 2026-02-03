@@ -2,7 +2,7 @@ import time
 import sys
 sys.path.append('.')
 
-from camera.mock_oak_camera import MockOAKCamera
+from camera.real_oak_camera import RealOAKCamera
 from detection.obstacle_detector import ObstacleDetector
 from audio.audio_generator import AudioFeedbackGenerator
 
@@ -12,7 +12,8 @@ class AssistiveNavigationSystem:
     def __init__(self):
         print("Initializing Assistive Navigation Hat System...")
         
-        self.camera = MockOAKCamera(width=640, height=400)
+        self.camera = RealOAKCamera(width=640, height=400)
+        self.camera.start()
         self.detector = ObstacleDetector(min_distance_feet=2, max_distance_feet=4)
         self.audio = AudioFeedbackGenerator()
         
@@ -68,6 +69,7 @@ class AssistiveNavigationSystem:
     def stop(self):
         """Stop the system and display statistics"""
         self.running = False
+        self.camera.stop()
         
         print("\n" + "=" * 50)
         print("System Statistics:")
