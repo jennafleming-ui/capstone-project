@@ -5,10 +5,10 @@ sys.path.append('.')
 TEST_MODE = True
 
 if TEST_MODE:
-    from camera.mock_oak_camera import MockOakCamera as CameraClass
+    from camera.mock_oak_camera import MockOAKCamera as CameraClass
     print(" RUNNING IN TEST MODE - Using Mock Camera\n")
 else:
-    from camera.real_oak_camera import RealOakCamera as CameraClass
+    from camera.real_oak_camera import RealOAKCamera as CameraClass
     print(" Running with Real Oak Camera\n")
 
 from detection.obstacle_detector import ObstacleDetector
