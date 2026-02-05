@@ -65,6 +65,12 @@ class AssistiveNavigationSystem:
                     elapsed = time.time() - start_time
                     print(f"\n[{elapsed:.1f}s] Frame {self.frame_count}")
                     print(f"Obstacles detected: {len(obstacles)}")
+
+                    if obstacles:
+                        for i, obs in enumerate(obstacles, 1):
+                            print(f" Obstacle {i}: Region={obs['region']}, "
+                                  f"Distance={obs['distance_feet']:.1f} ft, "
+                                  f"Coverage={obs['coverage_percent']:.1f}%")
                 
                 time.sleep(0.1)  # Simulate processing time
         
