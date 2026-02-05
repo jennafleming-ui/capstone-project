@@ -7,6 +7,14 @@ class AudioFeedbackGenerator:
     
     def __init__(self):
         self.engine = pyttsx3.init()
+        try:
+            voices = self.engine.getProperty('voices')
+            if voices and len(voices) > 0:
+                self.engine.setProperty('voice', voices[0].id)
+                print(f"Using voice: {voices[0].id}")
+        except Exception as e:
+            print(f"Voice setting failed, using default: {e}")
+            
         self.engine.setProperty('rate', 175)  # Speed of speech
         self.engine.setProperty('volume', 1.0)  # Volume (0.0 to 1.0)
         
