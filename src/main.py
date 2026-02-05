@@ -93,4 +93,4 @@ if __name__ == "__main__":
     system = AssistiveNavigationSystem()
     
     # Run for 30 seconds
-    system.run(duration_seconds=30)
+    system.run(duration_seconds=float('inf'))
