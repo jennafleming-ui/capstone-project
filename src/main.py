@@ -22,7 +22,7 @@ class AssistiveNavigationSystem:
         
         self.camera = CameraClass(width=640, height=400)
         self.camera.start()
-        self.detector = ObstacleDetector(min_distance_feet=2, max_distance_feet=4)
+        self.detector = ObstacleDetector(min_distance_feet=2, max_distance_feet=6)
         self.audio = AudioFeedbackGenerator()
         
         self.running = False
