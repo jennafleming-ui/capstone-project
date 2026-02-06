@@ -5,7 +5,7 @@ import time
 class ObstacleDetector:
     """Detects obstacles within specified range (2-4 feet)"""
     
-    def __init__(self, min_distance_feet=2, max_distance_feet=4):
+    def __init__(self, min_distance_feet=2, max_distance_feet=6):
         self.min_distance_mm = min_distance_feet * 304.8
         self.max_distance_mm = max_distance_feet * 304.8
         self.detection_threshold = 0.1  # 10% of frame must contain obstacle
