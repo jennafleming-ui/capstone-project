@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import time
-from datetime import import datetime
+from datetime import datetime
 import depthai as dai
 
 class RealOAKCamera:
