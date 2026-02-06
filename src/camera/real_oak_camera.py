@@ -34,12 +34,12 @@ class RealOAKCamera:
         cam_left.out.link(stereo.left)
         cam_right.out.link(stereo.right)
         
-        # Outputs
-        xout_rgb = self.pipeline.create(dai.node.XLinkOut)
+        # Outputs - using createXLinkOut instead
+        xout_rgb = self.pipeline.createXLinkOut()
         xout_rgb.setStreamName("rgb")
         cam_rgb.preview.link(xout_rgb.input)
         
-        xout_depth = self.pipeline.create(dai.node.XLinkOut)
+        xout_depth = self.pipeline.createXLinkOut()
         xout_depth.setStreamName("depth")
         stereo.depth.link(xout_depth.input)
     
