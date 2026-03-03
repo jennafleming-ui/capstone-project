@@ -2,7 +2,7 @@ import time
 import sys
 sys.path.append('.')
 
-TEST_MODE = False
+TEST_MODE = True
 
 if TEST_MODE:
     from camera.mock_oak_camera import MockOAKCamera as CameraClass
