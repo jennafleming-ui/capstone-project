@@ -1,0 +1,38 @@
+cd ~/capstone-project
+python3 -c "
+import cv2
+import depthai as dai
+
+pipeline = dai.Pipeline()
+
+left = pipeline.create(dai.node.MonoCamera)
+left.setBoardSocket(dai.CameraBoardSocket.CAM_B)
+left.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
+
+right = pipeline.create(dai.node.MonoCamera)
+right.setBoardSocket(dai.CameraBoardSocket.CAM_C)
+right.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
+
+xleft = pipeline.create(dai.node.XLinkOut)
+xleft.setStreamName('left')
+left.out.link(xleft.input)
+
+xright = pipeline.create(dai.node.XLinkOut)
+xright.setStreamName('right')
+right.out.link(xright.input)
+
+with dai.Device(pipeline) as device:
+    qleft = device.getOutputQueue('left', maxSize=4, blocking=False)
+    qright = device.getOutputQueue('right', maxSize=4, blocking=False)
+    
+    print('Press Q to quit')
+    while True:
+        leftFrame = qleft.get().getCvFrame()
+        rightFrame = qright.get().getCvFrame()
+        
+        cv2.imshow('Left Camera', leftFrame)
+        cv2.imshow('Right Camera', rightFrame)
+        
+        if cv2.waitKey(1) == ord('q'):
+            break
+"
