@@ -1,5 +1,3 @@
-cd ~/capstone-project
-python3 -c "
 import cv2
 import depthai as dai
 
@@ -8,10 +6,12 @@ pipeline = dai.Pipeline()
 left = pipeline.create(dai.node.MonoCamera)
 left.setBoardSocket(dai.CameraBoardSocket.CAM_B)
 left.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
+left.setFps(30)
 
 right = pipeline.create(dai.node.MonoCamera)
 right.setBoardSocket(dai.CameraBoardSocket.CAM_C)
 right.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
+right.setFps(30)
 
 xleft = pipeline.create(dai.node.XLinkOut)
 xleft.setStreamName('left')
@@ -21,18 +21,25 @@ xright = pipeline.create(dai.node.XLinkOut)
 xright.setStreamName('right')
 right.out.link(xright.input)
 
-with dai.Device(pipeline) as device:
-    qleft = device.getOutputQueue('left', maxSize=4, blocking=False)
-    qright = device.getOutputQueue('right', maxSize=4, blocking=False)
-    
-    print('Press Q to quit')
-    while True:
-        leftFrame = qleft.get().getCvFrame()
-        rightFrame = qright.get().getCvFrame()
-        
-        cv2.imshow('Left Camera', leftFrame)
-        cv2.imshow('Right Camera', rightFrame)
-        
-        if cv2.waitKey(1) == ord('q'):
-            break
-"
+try:
+    with dai.Device(pipeline) as device:
+        qleft = device.getOutputQueue('left', maxSize=4, blocking=False)
+        qright = device.getOutputQueue('right', maxSize=4, blocking=False)
+
+        print("Press Q to quit")
+        while True:
+            leftFrame = qleft.tryGet()
+            rightFrame = qright.tryGet()
+
+            if leftFrame is not None:
+                cv2.imshow('Left Camera', leftFrame.getCvFrame())
+            if rightFrame is not None:
+                cv2.imshow('Right Camera', rightFrame.getCvFrame())
+
+            if cv2.waitKey(1) == ord('q'):
+                break
+
+except Exception as e:
+    print(f"Failed to connect to device: {e}")
+finally:
+    cv2.destroyAllWindows()
