@@ -22,36 +22,25 @@ class MockOAKCamera:
         depth_map = np.full((self.height, self.width), 3048.0, dtype=np.float32)
         
         # Simulate different obstacle scenarios based on frame count
-        scenario = (self.frame_count // 30) % 5  # Change scenario every 3 seconds
+        scenario = (self.frame_count // 30) % 5
         
         if scenario == 0:
-            # CENTER obstacle at 2.5 feet
-            depth_map[150:250, 250:390] = 762  # 2.5 feet in mm
-            
+            depth_map[150:250, 250:390] = 762  # center at 2.5 feet
         elif scenario == 1:
-            # LEFT obstacle at 3 feet
-            depth_map[100:300, 50:200] = 914  # 3 feet in mm
-            
+            depth_map[100:300, 50:200] = 914  # left at 3 feet
         elif scenario == 2:
-            # RIGHT obstacle at 3.5 feet
-            depth_map[100:300, 440:590] = 1067  # 3.5 feet in mm
-            
+            depth_map[100:300, 440:590] = 1067  # right at 3.5 feet
         elif scenario == 3:
-            # Multiple obstacles - center and left
-            depth_map[150:250, 250:390] = 762   # center at 2.5 feet
-            depth_map[100:200, 50:150] = 1219   # left at 4 feet
-            
+            depth_map[150:250, 250:390] = 762
+            depth_map[100:200, 50:150] = 1219
         elif scenario == 4:
-            # All three regions with obstacles
-            depth_map[150:250, 100:200] = 914   # left at 3 feet
-            depth_map[120:280, 270:370] = 685   # center at 2.25 feet (close!)
-            depth_map[180:280, 450:550] = 1143  # right at 3.75 feet
+            depth_map[150:250, 100:200] = 914
+            depth_map[120:280, 270:370] = 685
+            depth_map[180:280, 450:550] = 1143
         
-        # Add some realistic noise
         noise = np.random.normal(0, 10, depth_map.shape)
         depth_map = depth_map + noise
         
-        # Create dummy RGB frame
         rgb_frame = np.zeros((self.height, self.width, 3), dtype=np.uint8)
         
         return {
