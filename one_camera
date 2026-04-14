@@ -1,3 +1,4 @@
+cat > ~/capstone-project/src/camera/real_oak_camera.py << 'EOF'
 import depthai as dai
 import numpy as np
 from datetime import datetime
@@ -19,7 +20,7 @@ class RealOAKCamera:
     def start(self):
         self.device = dai.Device(self.pipeline)
         self.mono_queue = self.device.getOutputQueue("mono", maxSize=4, blocking=False)
-        print("Single camera mode - NO REAL DEPTH")
+        print("Single camera - NO REAL DEPTH")
         
     def capture_rgb_depth(self):
         mono_frame = self.mono_queue.get().getCvFrame()
@@ -34,3 +35,4 @@ class RealOAKCamera:
     
     def stop(self):
         self.device.close()
+EOF
