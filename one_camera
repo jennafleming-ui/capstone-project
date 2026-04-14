@@ -3,42 +3,32 @@ import numpy as np
 from datetime import datetime
 
 class RealOAKCamera:
-    """Single camera - NO DEPTH CAPABILITY"""
-    
     def __init__(self, width=640, height=400):
         self.width = width
         self.height = height
         self.pipeline = dai.Pipeline()
         
-        # Single mono camera on CAM_C (the one that works)
-        cam = self.pipeline.create(dai.node.MonoCamera)
+        cam = self.pipeline.createMonoCamera()
         cam.setBoardSocket(dai.CameraBoardSocket.CAM_C)
         cam.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
         
-        # Output
-        xout = self.pipeline.create(dai.node.XLinkOut)
+        xout = self.pipeline.createXLinkOut()
         xout.setStreamName("mono")
         cam.out.link(xout.input)
         
     def start(self):
         self.device = dai.Device(self.pipeline)
         self.mono_queue = self.device.getOutputQueue("mono", maxSize=4, blocking=False)
-        print("WARNING: Single camera mode - NO REAL DEPTH DATA")
+        print("Single camera mode - NO REAL DEPTH")
         
     def capture_rgb_depth(self):
-        # Get mono frame
         mono_frame = self.mono_queue.get().getCvFrame()
-        
-        # FAKE depth map - just random noise
-        # This is NOT real depth - one camera cannot measure distance!
         fake_depth = np.random.uniform(600, 2000, (self.height, self.width)).astype(np.float32)
-        
-        # Dummy RGB
         rgb_frame = np.zeros((self.height, self.width, 3), dtype=np.uint8)
         
         return {
             'rgb': rgb_frame,
-            'depth': fake_depth,  # COMPLETELY FAKE
+            'depth': fake_depth,
             'timestamp': datetime.now().isoformat()
         }
     
