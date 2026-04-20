@@ -18,6 +18,8 @@ class RealOAKCamera:
         cam_right.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
         
         stereo = self.pipeline.createStereoDepth()
+        stereo.setLeftRightCheck(False)
+        stereo.setExtendedDisparity(False)
         cam_left.out.link(stereo.left)
         cam_right.out.link(stereo.right)
         
