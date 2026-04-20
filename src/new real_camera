@@ -1,47 +1,32 @@
-cat > ~/capstone-project/src/camera/real_oak_camera.py << 'EOF'
-import depthai as dai
-import numpy as np
-from datetime import datetime
-
-class RealOAKCamera:
-    def __init__(self, width=640, height=400):
-        self.width = width
-        self.height = height
-        self.pipeline = dai.Pipeline()
-        
-        cam_left = self.pipeline.createMonoCamera()
-        cam_left.setBoardSocket(dai.CameraBoardSocket.CAM_B)
-        cam_left.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
-        
-        cam_right = self.pipeline.createMonoCamera()
-        cam_right.setBoardSocket(dai.CameraBoardSocket.CAM_C)
-        cam_right.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
-        
-        stereo = self.pipeline.createStereoDepth()
-        stereo.setLeftRightCheck(False)
-        stereo.setExtendedDisparity(False)
-        cam_left.out.link(stereo.left)
-        cam_right.out.link(stereo.right)
-        
-        xout = self.pipeline.createXLinkOut()
-        xout.setStreamName("depth")
-        stereo.depth.link(xout.input)
-        
-    def start(self):
-        self.device = dai.Device(self.pipeline)
-        self.depth_queue = self.device.getOutputQueue("depth", maxSize=4, blocking=False)
-        print("OAK Camera started!")
-        
-    def capture_rgb_depth(self):
-        depth_frame = self.depth_queue.get().getFrame()
-        rgb_frame = np.zeros((self.height, self.width, 3), dtype=np.uint8)
-        
-        return {
-            'rgb': rgb_frame,
-            'depth': depth_frame.astype(np.float32),
-            'timestamp': datetime.now().isoformat()
-        }
-    
-    def stop(self):
-        self.device.close()
+cat > ~/capstone-project/dummy_calibration.json << 'EOF'
+{
+  "eepromData": {
+    "boardName": "OAK-FFC",
+    "boardRev": "R1M1E1",
+    "cameraData": [
+      {
+        "socket": 1,
+        "width": 1280,
+        "height": 800,
+        "intrinsicMatrix": [[800, 0, 640], [0, 800, 400], [0, 0, 1]],
+        "distortionCoeff": [0, 0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        "socket": 2,
+        "width": 1280,
+        "height": 800,
+        "intrinsicMatrix": [[800, 0, 640], [0, 800, 400], [0, 0, 1]],
+        "distortionCoeff": [0, 0, 0, 0, 0, 0, 0, 0]
+      }
+    ],
+    "stereoRectificationData": {
+      "leftCameraSocket": 1,
+      "rightCameraSocket": 2,
+      "rectifiedRotationLeft": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+      "rectifiedRotationRight": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+      "leftToRightTranslation": [75, 0, 0],
+      "baseline": 75
+    }
+  }
+}
 EOF
