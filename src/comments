@@ -2,30 +2,49 @@ class RealOAKCamera:
     def __init__(self, width=640, height=400):
         self.width = width
         self.height = height
+
         self.pipeline = dai.Pipeline()
 
-        # Create dummy calibration
-        #calib = dai.CalibrationHandler()
-        #calib.setStereoLeft(dai.CameraBoardSocket.CAM_B, [800, 0, 640, 0, 800, 400, 0, 0, 1])
-        #calib.setStereoRight(dai.CameraBoardSocket.CAM_C, 75.0)
+        # -------------------------
+        # Stereo depth node FIRST
+        # -------------------------
+        stereo = self.pipeline.createStereoDepth()
         stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.HIGH_DENSITY)
+        stereo.setLeftRightCheck(False)
+        stereo.setExtendedDisparity(False)
 
+        # -------------------------
+        # Left camera
+        # -------------------------
         cam_left = self.pipeline.createMonoCamera()
         cam_left.setBoardSocket(dai.CameraBoardSocket.CAM_B)
         cam_left.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
 
+        # -------------------------
+        # Right camera
+        # -------------------------
         cam_right = self.pipeline.createMonoCamera()
         cam_right.setBoardSocket(dai.CameraBoardSocket.CAM_C)
         cam_right.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
 
-        stereo = self.pipeline.createStereoDepth()
-        stereo.setLeftRightCheck(False)
-        stereo.setExtendedDisparity(False)
+        # Link cameras to stereo
         cam_left.out.link(stereo.left)
         cam_right.out.link(stereo.right)
 
+        # -------------------------
+        # Output stream
+        # -------------------------
         xout = self.pipeline.createXLinkOut()
         xout.setStreamName("depth")
         stereo.depth.link(xout.input)
 
-        self.calib = calib
+        # -------------------------
+        # Calibration (FIXED)
+        # -------------------------
+        # Only set this if you actually create it
+        self.calib = None
+
+        # If you later enable calibration, it should look like:
+        # self.calib = dai.CalibrationHandler()
+        # self.calib.setStereoLeft(...)
+        # self.calib.setStereoRight(...)
